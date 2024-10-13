@@ -6,4 +6,4 @@ The project implements features such as secure user authentication using hashed 
 
 The application's URL routing is handled by a custom-built router that dynamically maps URL segments to corresponding controllers and actions. SQL queries are carefully crafted using prepared statements to prevent SQL injection attacks.
 
-Demo of the application can be seen at <a href="test.zyrex.pl">test.zyrex.pl</a> (admin/admin).
+Demo of the application can be seen at <a href="https://test.zyrex.pl">test.zyrex.pl</a> (admin/admin).
