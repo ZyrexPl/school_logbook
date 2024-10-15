@@ -6,15 +6,19 @@ use App\Models\User;
 use App\Models\Grade;
 use App\Models\Teacher;
 use App\Models\Subject;
+use App\Models\Student;
 
 class UsersController {
     private $db;
     private $user;  // Właściwość dla obiektu User
+    private $subject;
+    private $grades;
 
     public function __construct($db) {
         $this->db = $db;
         $this->user = new User($this->db);  // Tworzymy obiekt User
         $this->subject = new Subject($this->db);  // Tworzymy obiekt Przedmiot
+        $this->grades = new Grade($this->db);
     }
     
     public function index() {
@@ -74,7 +78,7 @@ class UsersController {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['name'] = $user['first_name'];
                     // Pobierz oceny ucznia
-                    $grades = Grade::getGradesByStudentId($user['id'], $this->db);
+                    $gradesByStudent = $this->grades->getGradesByStudentId($user['id']);
                     
                     // Renderuj widok dla ucznia
                     require_once __DIR__ . '/../Views/student_dashboard.php';
@@ -86,8 +90,9 @@ class UsersController {
                 } else {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['name'] = $user['login'];
+                    $_SESSION['first_name'] = $user['first_name'];
                     // Nauczyciel
-                    echo 'Panel nauczyciela ...';  
+                    header("Location: /users/teacher"); 
                 }
             } else {
                 echo "Błędny login lub hasło.";
@@ -104,6 +109,19 @@ class UsersController {
         $teachers = Teacher::getAllTeachers($this->db);
 
         require_once __DIR__ . '/../Views/admin_dashboard.php';
+    }
+
+    public function teacher() {
+        session_start();
+        $subjects = $this->subject->getAllSubjects($this->db);
+        $students = Student::getAllStudents($this->db);
+        foreach ($subjects as $subject) {
+            if ($subject['teacher_id'] == $_SESSION['user_id']) {
+                $logbook [$subject['name']] = $students; //dopisanie do przedmiotu uczniów 
+            }
+        }
+
+        require_once __DIR__ . '/../Views/teacher_dashboard.php';
     }
 
     //Wyloguj

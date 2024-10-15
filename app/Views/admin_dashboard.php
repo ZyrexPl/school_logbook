@@ -4,7 +4,7 @@ include __DIR__ . '/head.php';
 include __DIR__ . '/header_admin.php'; 
 ?> 
 <main>
-    <h1>Panel administratora: <?php echo htmlspecialchars($_SESSION['name']); //Używamy funkcji htmlspecialchars(), aby wyświetlane dane użytkownika były bezpieczne i chronione przed atakami XSS. ?></h1>
+    <h1>Panel administratora: <?php echo htmlspecialchars($_SESSION['name']); ?></h1>
 
     <!-- Tabela z przedmiotami -->
     <h2>Przedmioty</h2>
