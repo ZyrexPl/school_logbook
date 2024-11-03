@@ -16,7 +16,11 @@ class Router {
             $controllerObject = new $controllerClass($db);
             if (method_exists($controllerObject, $action)) {
                 if (!empty($segments[2])) {
-                    $controllerObject->$action($segments[2]);
+                    if (!empty($segments[3])) {
+                        $controllerObject->$action($segments[2], $segments[3]);
+                    } else {
+                        $controllerObject->$action($segments[2]);
+                    }
                 } else {
                     $controllerObject->$action();
                 }

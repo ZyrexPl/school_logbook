@@ -78,10 +78,7 @@ class UsersController {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['name'] = $user['first_name'];
                     // Pobierz oceny ucznia
-                    $gradesByStudent = $this->grades->getGradesByStudentId($user['id']);
-                    
-                    // Renderuj widok dla ucznia
-                    require_once __DIR__ . '/../Views/student_dashboard.php';
+                    header("Location: /users/student");
                 } else if ($user['permissions'] === 'admin') {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['name'] = $user['login'];
@@ -111,16 +108,42 @@ class UsersController {
         require_once __DIR__ . '/../Views/admin_dashboard.php';
     }
 
+    public function student() {
+        session_start();
+        $gradesByStudent = $this->grades->getGradesByStudentId($_SESSION['user_id']);
+        $sortGrades = array();
+        foreach ($gradesByStudent as $grade) {
+            $sortGrades[$grade['subject']][] = $grade['grade'];
+        }
+                    
+        // Renderuj widok dla ucznia
+        require_once __DIR__ . '/../Views/student_dashboard.php';
+    }
+
     public function teacher() {
         session_start();
         $subjects = $this->subject->getAllSubjects($this->db);
         $students = Student::getAllStudents($this->db);
+        $logbook = array();
         foreach ($subjects as $subject) {
             if ($subject['teacher_id'] == $_SESSION['user_id']) {
-                $logbook [$subject['name']] = $students; //dopisanie do przedmiotu uczniów 
+                $logbook[$subject['name']] = array (
+                    'id' => $subject['id'],
+                    'students' => $students //dopisanie do przedmiotu uczniów
+                );
+
+                $gradesBySubject = $this->grades->getGradesBySubject($subject['id']); //pobieramy oceny z danego przedmiotu
+                if (!empty($gradesBySubject)) { 
+                    foreach ($logbook[$subject['name']]['students'] as $key => $stud) {
+                        foreach ($gradesBySubject as $grade) {
+                            if ($stud['id'] == $grade['student_id']) {
+                                $logbook[$subject['name']]['students'][$key]['grades'][] = $grade['grade']; //przypisujemy oceny do ucznia
+                            }
+                        }
+                    }
+                }
             }
         }
-
         require_once __DIR__ . '/../Views/teacher_dashboard.php';
     }
 

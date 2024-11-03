@@ -15,11 +15,11 @@ include __DIR__ . '/header_admin.php';
             </tr>
         </thead>
         <tbody>
-            <?php if (!empty($grades)): ?>
-                <?php foreach ($grades as $grade): ?>
+            <?php if (!empty($sortGrades)): ?>
+                <?php foreach ($sortGrades as $subjectName => $grades): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($grade['subject']); ?></td>
-                        <td><?php echo htmlspecialchars($grade['grade']); ?></td>
+                        <td><?php echo htmlspecialchars($subjectName); ?></td>
+                        <td><?php echo htmlspecialchars(implode(', ', $grades)); ?></td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>

@@ -10,6 +10,7 @@ use App\Models\Subject;
 class SubjectsController {
     private $db;
     private $user;
+    private $teacher;
 
     public function __construct($db) {
         $this->db = $db;

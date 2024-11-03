@@ -18,13 +18,19 @@ include __DIR__ . '/header_admin.php';
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($students as $student): ?>
+            <?php foreach ($students['students'] as $student): ?>
                 <tr>
                     <td><?php echo htmlspecialchars($student['first_name']); ?></td>
                     <td><?php echo htmlspecialchars($student['last_name']); ?></td>
-                    <td></td>
                     <td>
-                        <a href="/grades/add/<?php echo $student['id']; ?>" class="button">Dodaj ocenę</a>
+                        <?php
+                            if (!empty($student['grades'])) {
+                                echo implode(", ",$student['grades']);
+                            }
+                        ?>
+                    </td>
+                    <td>
+                        <a href="/grades/add/<?php echo $student['id']; ?>/<?php echo $students['id']; ?>" class="button">Dodaj ocenę</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
